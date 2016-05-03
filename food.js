@@ -1,34 +1,27 @@
-// load json file via XHR
-function executeThisCodeAfterFileIsLoaded () {
-  // A bit more about what `this` is here. What is the execution context?
-  console.log(this);
-  console.log(this.responseText);
+var food = (function () {
+  var dogfoodArray = [];
 
-  // Show usage of JSON.parse() here to get a POJO
-  var pojoFood = JSON.parse(this.responseText);
-  console.log("pojoFood = ", pojoFood);
-}
+  return {
+  	loadDogFoods: function (callbackShowFoods) {
+  	// Create an XHR object
+  		var loader = new XMLHttpRequest();
+  		// Then tell the XHR object exactly what to do
+  		loader.open("GET", "dogfood.json");
+  		// Tell the XHR object to start
+  		loader.send();
 
-function executeThisCodeIfXHRFails () {
-  console.log("ERROR:  XHR Failed.")
-}
+      // XHR objects emit events when their operation is complete, or an error occurs
+      loader.addEventListener("load", function () {
+        // Set the value of the private array
+        dogfoodArray = JSON.parse(this.responseText);
+        console.log("food.js-17 / dogfoodArray = ", dogfoodArray);
 
-// Create an XHR object
-var myRequest = new XMLHttpRequest();
-
-// XHR objects emit events when their operation is complete, or an error occurs
-myRequest.addEventListener("load", executeThisCodeAfterFileIsLoaded);
-myRequest.addEventListener("error", executeThisCodeIfXHRFails);
-
-// Then tell the XHR object exactly what to do
-myRequest.open("GET", "dogfood.json");
-
-// Tell the XHR object to start
-myRequest.send();
-
-
-// store JSON contents in .js variable
-var dogfoodArray = JSON.parse(this.responseText);
-
+        // Invoke the callback function so that the caller knows
+        // that the process is complete. 
+        callbackShowFoods(dogfoodArray);
+      });
+  	} 	
+  }
+})();
 
 
